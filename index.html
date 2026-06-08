@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voipark · 研究進度 Live Docs</title>
+<style>
+:root{
+  --bg:#fbfaf6; --bg2:#f5f1e9; --card:#ffffff; --line:#ebe5da;
+  --fg:#2c2a27; --mut:#6f6a61; --soft:#908a7f;
+  --acc:#2f6fe0; --acc-soft:#eaf1fd; --acc2:#ef6f47; --acc2-soft:#fdeee8;
+  --ok:#2f9e44; --warn:#e0892f;
+  --r:16px; --sh:0 1px 2px rgba(60,45,25,.05),0 10px 28px -16px rgba(60,45,25,.18);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:17px/1.75 -apple-system,"Segoe UI","PingFang TC","Noto Sans TC",sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:#1f1d1a}
+code{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.88em;color:#9a4a2c}
+pre{background:#fcfaf4;border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow:auto;font-size:14px;line-height:1.6}
+pre code{background:none;border:0;padding:0;color:var(--fg)}
+hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+blockquote{margin:14px 0;padding:10px 16px;background:var(--acc-soft);border-left:3px solid var(--acc);border-radius:0 10px 10px 0;color:#3b4860}
+
+/* hero */
+.hero{background:
+  radial-gradient(1100px 460px at 12% -10%,#ffe9dd,transparent),
+  radial-gradient(900px 460px at 92% -5%,#e2ecff,transparent),
+  var(--bg2);border-bottom:1px solid var(--line)}
+.hero-inner{max-width:900px;margin:0 auto;padding:60px 26px 46px}
+.badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;letter-spacing:.08em;
+  color:var(--acc2);background:var(--acc2-soft);border:1px solid #f6d6c8;border-radius:999px;padding:5px 13px;margin-bottom:20px}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:var(--acc2)}
+h1{font-size:46px;line-height:1.1;margin:.08em 0;letter-spacing:-.02em;color:#221f1b}
+.oneliner{font-size:21px;color:#3b3833;margin:.35em 0 .55em;font-weight:500}
+.vision{color:var(--mut);max-width:780px;font-size:17px}
+.pills{margin:20px 0 6px}
+.pill{display:inline-block;background:#fff;border:1px solid var(--line);box-shadow:var(--sh);
+  border-radius:999px;padding:7px 15px;margin:5px 9px 5px 0;font-size:14px;font-weight:500}
+.pill.is-acc{background:var(--acc-soft);border-color:#cfe0fb;color:#244a8e}
+.updated{color:var(--soft);font-size:13px;margin-top:18px}
+
+/* layout */
+main{max-width:900px;margin:0 auto;padding:10px 26px 70px}
+.section-title{font-size:28px;margin:54px 0 8px;color:#221f1b;letter-spacing:-.01em}
+.section-sub{color:var(--mut);margin:0 0 20px;font-size:16px}
+
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:22px 24px;box-shadow:var(--sh);margin:16px 0}
+.card h2{margin:.1em 0 .5em;font-size:21px}
+.card h3{margin:.1em 0 .55em;font-size:18px;color:#26241f}
+.grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:22px}
+.tag{display:inline-block;font-size:11px;font-weight:600;color:var(--acc);background:var(--acc-soft);
+  border-radius:6px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+.intro{background:linear-gradient(180deg,#fff,#fffdf9)}
+.intro p{font-size:17.5px}
+
+/* tables */
+/* 手機上寧可橫向 scroll, 不要 wrap 太誇張 → 給表格 min-width, 容器 overflow */
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.5em 0;
+  background:linear-gradient(90deg,transparent 92%,rgba(60,45,25,.04));border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:480px}
+.tablewrap.wide table{min-width:680px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{color:var(--mut);font-weight:600;font-size:13.5px;background:#fbf8f2;border-bottom:2px solid var(--line)}
+tbody tr:hover{background:#fdfbf6}
+.muted{color:var(--mut);font-size:14.5px}
+
+/* three lines */
+.lines{display:grid;grid-template-columns:1fr;gap:16px}
+.line{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc2);
+  border-radius:var(--r);padding:18px 22px;box-shadow:var(--sh)}
+.line h3{margin:.1em 0 .5em;font-size:18px}
+.insight{border-top:1px dashed var(--line);padding:14px 0}
+.insight:first-child{border-top:0}
+
+/* embedded raw md docs */
+.doc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px 24px;box-shadow:var(--sh);margin:16px 0}
+.doc h2{font-size:20px;margin-top:1em} .doc h3{font-size:16px;color:var(--acc);margin-top:1em}
+.doc h4{font-size:15px;color:var(--mut)}
+
+footer{border-top:1px solid var(--line);color:var(--soft);font-size:13.5px;text-align:center;padding:30px 20px;max-width:900px;margin:0 auto}
+footer a{color:var(--mut)}
+
+@media(max-width:560px){
+  h1{font-size:34px}.hero-inner{padding:42px 18px 30px}
+  main{padding:8px 16px 50px}.section-title{font-size:23px}
+}
+</style>
+</head>
+<body>
+
+    
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="badge"><span class="dot"></span>LIVE · 研究進度即時更新</div>
+        <h1>Voipark</h1>
+        <p class="oneliner">聲控找車位 App — 駕駛開口問，App 用語音告訴你哪裡有位、有多大把握，並語音導航交棒。</p>
+        <p class="vision">讓駕駛在『移動中』不必低頭、不必觸控，就能用最自然的語音找到並導航至最可能有空位的停車地點，從源頭消除『邊開車邊滑找車位 App』造成的分心風險。</p>
+        <div class="pills">
+          <span class="pill is-acc">🎙️ 語音優先</span>
+          <span class="pill is-acc">🤝 誠實揭露把握度</span>
+          <span class="pill">🗂️ 資料源 TDX</span>
+          <span class="pill">📍 首發雙北</span>
+        </div>
+        <p class="updated">最後更新 2026-06-08 16:24 TW　·　核心檔基準日 2026-06-01</p>
+      </div>
+    </header>
+    <main>
+      <div class="card intro">
+        <h2 style="margin-top:.2em">這是什麼？一句話看懂</h2>
+        <p>Voipark 是一款<strong>聲控找車位 App</strong>：開車時開口問「附近哪裡好停」，App 就用<strong>語音</strong>告訴你哪個停車場最可能有空位、<strong>有幾成把握</strong>，再帶你導航過去——全程不用低頭看手機。</p>
+        <p>和市面所有停車 App 不一樣的地方：我們<strong>不假裝「一定有位」</strong>，而是誠實講出「這筆資料多新、我們多有把握」，讓你自己做最好的判斷。這份「誠實」正是我們最難被抄走的核心競爭力。</p>
+        <p class="muted">下面這頁是專案的<strong>研究與決策進度</strong>，隨著開發自動更新。由上而下：先看核心決策 → 三條主力工作 → 商業研究重點 → 最後是團隊內部的詳細看板（附代號對照表，不熟也讀得懂）。</p>
+      </div>
+
+      <h2 class="section-title">🎯 核心決策</h2>
+      <p class="section-sub">目前已經想清楚、拍板定案的幾件大事。</p>
+      <section class="grid">
+        <div class="card"><h3>這個 App 現在打算做成什麼樣<span class="tag">現行決策</span></h3><p class='muted' style='margin-top:0'>目前拍板的產品形狀：</p><p>📱 <strong>用哪個裝置：</strong>iPhone 獨立版 優先(載 MVP 完整語音閉環)；CarPlay P1 輔助；Android Auto 首版後</p><p>🧭 <strong>導航怎麼接：</strong>交棒後脫手 ：拉起導航即結束本 app 職責；MVP 不做在途重查/重排</p></div>
+        <div class="card"><h3>市場上沒人做的事 = 我們的機會</h3><p class='muted' style='margin-top:0'>盤點現有停車 App 後，發現的空白（也就是我們的護城河）：</p><div class='tablewrap wide'><table><thead><tr><th>市場空白</th><th>驗證狀態</th></tr></thead><tbody><tr><td>市面停車 App（停車大聲公、車麻吉、USPACE、自由停、uTagGo、iTaipeiParking 等）皆為『視覺/觸控優先』，駕駛中操作即分心源；無任何競品做到『語音問哪裡有位→語音回答即時車位』的閉環。</td><td><span class='muted'>✅ 已高度驗證</span></td></tr><tr><td>現有產品多直接呈現『剩餘車位數』，但不揭露資料新鮮度/來源可信度，駕駛無從判斷該不該相信。</td><td><span class='muted'>✅ 已高度驗證</span></td></tr><tr><td>路邊與路外停車資料分散在不同來源，缺乏以『駕駛當下決策』為中心的整合語音體驗。</td><td><span class='muted'>🟡 待驗證假設</span></td></tr></tbody></table></div></div>
+        <div class="card"><h3>已經拍板的技術決策</h3><div class='tablewrap wide'><table><thead><tr><th>決定了什麼</th><th>狀態</th></tr></thead><tbody><tr><td>以 TDX（運輸資料流通服務平臺，MOTC）作為主要停車資料來源。</td><td>✅ 已確認</td></tr><tr><td>語音回饋採『信心分級措辭』機制（非單純唸出車位數）。</td><td>✅ 已確認</td></tr><tr><td>平台/app 形狀 = 【iPhone 獨立版 優先】承載 MVP 完整語音閉環(語音框架: wake/按鍵說話+語音辨識+語音合成+多輪)；CarPlay 列 P1 輔助；Android Auto 列 首版後。</td><td>✅ 已確認</td></tr><tr><td>語音回應生成 MVP 採『信心桶驅動的確定性模板』，非 LLM 生成。</td><td>✅ 已確認</td></tr></tbody></table></div></div>
+        <div class="card"><h3>「有幾成把握」是怎麼算的</h3><p class='muted' style='margin-top:0'>我們不只說「有位/沒位」，還會告訴你資料多新、多可信，並反映在語音怎麼講：</p><div class='tablewrap wide'><table><thead><tr><th>把握度</th><th>判斷規則 → 語音怎麼說</th></tr></thead><tbody><tr><td><strong>🟢 高把握</strong></td><td>服務狀態 正常 且 空位數≥0 且 資料時間 ≤ 5 分 → 『確定有位』</td></tr><tr><td><strong>🟡 中等</strong></td><td>有效值 且 5 &lt; 資料時間 ≤ 12 分 → 『應該還有』</td></tr><tr><td><strong>🟠 低把握</strong></td><td>有效值 且 12 &lt; 資料時間 ≤ 20 分，或值可疑/近滿 → 『資料較舊…不保證』</td></tr><tr><td><strong>⚪ 無即時資料</strong></td><td>-1/負值/缺漏 或 服務狀態≠正常 或 feed 空 → 明確告知無即時資料</td></tr></tbody></table></div><p class='muted'>校準依據：真實 資料時間 分布 (台北路外中位1.9/P90 3分；新北路邊中位8分)</p></div>
+        <div class="card"><h3>真的去打了資料來源後發現的實況</h3><p class='muted' style='margin-top:0'>我們實際串接政府 TDX 平台、量了資料品質：</p><div class='tablewrap wide'><table><thead><tr><th>把握度</th><th>實際資料狀況</th></tr></thead><tbody><tr><td><strong>OffStreet_Taipei</strong></td><td>113 筆, 99.1% 有效, 資料時間 中位1.9/P90 3分 → 幾乎全 HIGH。高信心灘頭堡。</td></tr><tr><td><strong>OffStreet_NewTaipei</strong></td><td>經 TDX 完全無資料 (空 feed) → NO_LIVE。需市府平臺補 。</td></tr><tr><td><strong>OnStreet_Taipei</strong></td><td>68 筆全 -1 。假設=夜間停服(快照@23:40)，待 白天確認。</td></tr><tr><td><strong>OnStreet_NewTaipei</strong></td><td>2007 筆 100% 有效, 資料時間 中位8分 → MED。</td></tr></tbody></table></div><p class='muted'><strong>結論：</strong>雙北合計目前約僅『台北路外 ~110 場』可達高信心。</p></div>
+        <div class="card"><h3>一路推下來悟到的關鍵洞察</h3><div class='insight'><p>TDX 即時車位約『每 15 分鐘』級更新，是物理約束——我們無法承諾秒級『現在一定有位』。但這恰好讓我們的差異化成立：競品隱藏資料陳舊度、假裝即時；我們用『置信度透明』把 15 分鐘的不確定性誠實講出來，反而建立信任。資料的限制與我們的護城河是同一枚硬幣。</p><p class='muted'>→ 對產品的意義：產品定位不是『現在哪裡一定有位』，而是『以誠實信心給你最佳賭注』。語音措辭、信心分桶、UX 全部圍繞此重新定義。</p></div><div class='insight'><p>TDX 雙北資料地基不均：台北路外資料硬(99% 有效/2分新鮮)、新北路邊乾淨但稍舊、新北路外全空、台北路邊午夜全死。高信心可達面當下僅台北路外 ~110 場。</p><p class='muted'>→ 對產品的意義：MVP 採『灘頭堡』策略：先在台北路外做完整語音+信心+導航交棒垂直切片，證明閉環；同時 用市府平臺補缺口、釐清台北路邊是否僅夜間停服。缺口處正好由置信度透明誠實揭露，反成信任來源。</p></div><div class='insight'><p>CarPlay 的 Parking 類別【結構性禁止自訂語音閉環】：語音輸入只能走 Siri，app 不能直接收麥做 語音辨識/多輪對話。我們的護城河(開口問→app 念出空位+信心)在 CarPlay parking 類別下做不到，會被迫退成『Siri 觸發 + 視覺 模板 + 一鍵接力導航』(SpotHero 現況)。但反向洞察：因為我們是語音優先而非視覺優先，iOS 26.4 新增的 voice-based-conversational 類別(聽+說+極簡UI)可能比 parking 類別更貼合我們——只是該類別新且不確定、不可與 parking 並存。</p><p class='muted'>→ 對產品的意義：【挑戰 CarPlay-first 的天真版本】語音閉環差異化最完整的載體是 iPhone 獨立版，非 CarPlay。需 God 裁示平台/app 形狀：iPhone-first 全語音+CarPlay 後續輔助 賭 voice-conversational 類別 接受 CarPlay parking 降級。的 app 形狀待此裁示更新。</p><p class='muted'><em>裁示：God 選路徑 A 。進一步否決 voice-conversational(無GPS/無導航交棒/垂直零先例)。定案：iPhone 獨立版 載完整語音閉環為主體，CarPlay P1 = parking 類別降級。見 .carplay_p1_form 與 docs/research/2026-06-01_R07b_*。</em></p></div><div class='insight'><p>多方法論調研(7 框架交叉比對)收斂出 5 大結論: 置信度透明是對 Google 具【結構性免疫】的護城河——Google 複製語音閉環只需技術(6-12月),但複製置信度透明需主動承認自身資料品質缺口,與其『全知地圖』品牌根本衝突=商業理性護城河; 台北路外~110場灘頭堡是置信度護城河的『現實錨點』,做廣會稀釋品牌; GR=產品基礎設施非選項(新北路外全空/TDX限流/路邊夜停三問題根因都在政府端); iPhone 獨立版 是唯一完整承接護城河的載體; B2B 停車場導流是最符結構的營收路徑(C端免費慣性,但語音精準導流對業者是真實價值)。</p><p class='muted'>→ 對產品的意義：定位建議『誠實停車助理』新品類(非『更好的停車App』)。營收建議 B2B 先行/B2C 驗證/車廠長線。GTM 三階段。Top5 風險(Google入台/TDX政策/置信度被軟化/新北無解/單人瓶頸)。【待 God 裁示】營收模式與定位尚屬研究建議,未列為確認 TD。詳見 docs/pm-playbook/02-business-research/integrated-assessment.md</p></div></div>
+      </section>
+
+      <h2 class="section-title">🧭 三條主力線</h2>
+      <p class="section-sub">同時在推的三個方向：盯競品、顧資料、做體驗。</p>
+      <section class="lines">
+    <div class="line"><h3>① 盯緊競爭對手（持續強力調查）</h3>
+      <p>盤點雙北停車 App 後發現：它們全是「用眼睛看、用手點」的設計，開車時操作就是分心源，<strong>沒有一家做到「開口問→語音回答哪裡有位」</strong>。我們真正的對手不是這些 App，而是 <strong>Google</strong>（它握有 Android Auto 語音、Maps 停車難易度），但它沒有動機誠實揭露「資料有多準」——因為那會自曝其短。我們的差異化＝語音閉環 × 誠實揭露把握度。</p>
+      <p class="muted">進行中：追蹤 Google 動態 · 對標海外語音停車 App</p></div>
+    <div class="line"><h3>② 確保資料來源（產品的地基）</h3>
+      <p>主要資料來自政府的 <strong>TDX 運輸資料流通服務</strong>。實測下來：台北市約 110 個路外停車場（停車場、非路邊）資料夠新夠準，可以做到「高把握」；但新北市路外停車場 TDX 沒資料、台北路邊車格半夜會停止更新。這些缺口要靠政府合作補。</p>
+      <p class="muted">進行中：量白天的資料更新頻率 · 盤點市府平台補資料缺口</p></div>
+    <div class="line"><h3>③ 語音操作體驗（主力設計）</h3>
+      <p>把「開口問車位」拆成 11 個環節（喚醒 App→聽你說→轉文字→聽懂意圖→定位→查車位+算把握度→組織回答→念出來→跟你確認→<strong>接手導航</strong>→失敗時的降級講法），逐一做技術調研。</p>
+      <p><strong>關於 CarPlay：</strong>Apple 對車用「停車類」App 有結構性限制，不准第三方自訂完整語音對話 → 所以完整語音體驗先做在 <strong>iPhone App</strong> 上；CarPlay 列為第二優先（用 Siri 觸發 + 模板畫面 + 一鍵拉起導航）。</p></div>
+    </section>
+
+      <h2 class="section-title">📊 商業研究重點</h2>
+      <p class="section-sub">用 7 套商業分析框架（PESTEL、波特五力、SWOT、商業模式畫布、JTBD、VRIO、藍海）交叉比對後，五個彼此印證的結論：</p>
+      
+      <div class="card">
+        <div class="tablewrap"><table><thead><tr><th>結論</th><th>白話解釋</th></tr></thead><tbody>
+          <tr><td><strong>誠實是護城河</strong></td><td>Google 要抄「語音找位」只需技術；但要抄「誠實揭露有沒有位」就得自曝資料品質、和它「全知地圖」形象衝突——所以它不會做。這是我們最持久的優勢。</td></tr>
+          <tr><td><strong>先攻台北路外</strong></td><td>目前只有台北路外約 110 個停車場資料夠新夠準。先在這做到極致、建立信任，再往外擴。</td></tr>
+          <tr><td><strong>政府關係是地基</strong></td><td>資料來自政府 TDX 平台。新北缺資料、路邊夜間停服等問題得靠政府合作解，非技術能解。</td></tr>
+          <tr><td><strong>先做 iPhone 版</strong></td><td>完整的語音對話只有 iPhone App 做得到（CarPlay 規則限制第三方自訂語音），故主力先 iPhone。</td></tr>
+          <tr><td><strong>向停車場收費</strong></td><td>用戶端免費（大家習慣免費）；改向停車場業者收「精準帶客上門」的費用，較符合市場結構。</td></tr>
+        </tbody></table></div>
+        <p class="muted">完整報告（含 TAM/SAM/SOM 市場規模、Top 風險、7 大框架交叉分析）收錄在 <a href="https://voipark.github.io/pm-playbook/">PM Playbook 教科書</a>。</p>
+      </div>
+
+      <h2 class="section-title">📋 團隊內部即時看板</h2>
+      <p class="section-sub">給想深入了解的人——下面是團隊的即時狀態與任務清單，原汁原味、含內部代號。</p>
+      
+      <div class="card">
+        <h3>📖 看不懂下面的代號？先看這張對照表</h3>
+        <p class="muted" style="margin-top:0">團隊內部文件為了效率會用簡寫，這裡幫你翻譯：</p>
+        <div class="tablewrap"><table><thead><tr><th>代號</th><th>意思</th></tr></thead><tbody>
+          <tr><td><strong>TD</strong></td><td>Technical Decision，已拍板的技術決策</td></tr>
+          <tr><td><strong>SI</strong></td><td>Strategic Insight，戰略洞察</td></tr>
+          <tr><td><strong>GAP</strong></td><td>市場空白（別人沒做、我們可切入的點）</td></tr>
+          <tr><td><strong>R-</strong></td><td>Research，調研任務（如 R-01 競品調查）</td></tr>
+          <tr><td><strong>VF-</strong></td><td>Voice Flow，語音流程某一環節的技術調研</td></tr>
+          <tr><td><strong>P- / D-</strong></td><td>產品設計 / 部署相關任務</td></tr>
+          <tr><td><strong>B- / N-</strong></td><td>商業調研 / 命名與商標</td></tr>
+          <tr><td><strong>TDX</strong></td><td>交通部「運輸資料流通服務」，我們的主要車位資料來源</td></tr>
+          <tr><td><strong>MVP</strong></td><td>Minimum Viable Product，第一個能用的最小版本</td></tr>
+          <tr><td><strong>狀態圖示</strong></td><td>🔴 未開始 · 🟡 進行中 · 🟢 完成 · ⛔ 卡住 · 🔵 計畫中</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="doc"><h2>STATE.md — 當前狀態 / 重啟恢復指針</h2>
+<blockquote>最易變的檔，每段工作結束更新。開場由 SessionStart hook 自動注入 → 讀這個 ≈ 30 秒回到現場。 詳情才去翻 core_dna.json / todo_backlog.md / log/。</blockquote>
+<p><strong>更新：2026-06-08</strong>（<strong>命名定案 Voipark</strong>、org→Voipark、資料夾待改 Voipark、Telegram 通道、live-docs 自動發布）</p>
+<h3>現在進度</h3>
+<ul><li>階段：Phase 2（MVP 設計）展開中。</li><li>God 定調<strong>三條主力線</strong>持續推進（無單一特別任務）：①強力調查競品 ②確保資料來源 ③主力語音輸入 user flow 規劃+技術調研盤點。Telegram 擱置，改用 remote control。</li><li>剛完成（本回合）：</li><li><strong>線3</strong>：<code>docs/specs/voice-flow-spec-v0.md</code> —— 語音閉環 S0–S10 端到端拆解 + 各環節技術調研盤點（VF-01~13，🔴 關鍵路徑 7 項）+ 延遲預算。</li><li><strong>線2</strong>：建+驗 <code>scripts/poll_tdx_cadence.py</code>（節流/退避/token續期）；<strong>夜間 cadence 4h 輪詢背景跑中</strong>（00:09 起，PID 曾 39670）→ <code>data/2026-06-01_R02c_cadence.jsonl</code>。</li><li><strong>線1</strong>：開 R-05（Google 威脅追蹤）、R-06（海外語音停車對標）待派。</li><li>戰略不變：<strong>台北路外 ~110 場「灘頭堡」</strong>垂直切片。</li></ul>
+<h3>平台/CarPlay 形態已定案 (God 路徑A + R-07/R-07b, 2026-06-01)</h3>
+<ul><li><strong>MVP 主體 = iPhone standalone 全語音閉環</strong>(Speech framework: wake/tap-to-talk+STT+TTS+多輪+位置+TDX+URL交棒)。</li><li><strong>CarPlay = P1, parking 類別降級</strong>(SiriKit 觸發 + CPPointOfInterestTemplate + URL 交棒 Maps)。voice-conversational 類別已否決(無GPS/無交棒/垂直零先例)。</li><li>寫入 TD-03.carplay_p1_form / SI-03.resolution / R-07+R-07b 報告。<strong>此線收束，無懸念。</strong></li></ul>
+<h3>剛完成</h3>
+<ul><li><strong>B-01 商業調研 ✓</strong>：7 框架交叉比對整合 → <code>docs/pm-playbook/02-business-research/</code>（整合報告 + 7 附錄）。5 收斂點(SI-04)：置信度透明=對 Google 結構免疫護城河、灘頭堡=護城河錨點、GR=基礎設施、iPhone-first、B2B 先行。<strong>營收/定位屬研究建議,待 God 裁示</strong>。</li></ul>
+<h3>命名 / 基建近況 (2026-06-08)</h3>
+<ul><li><strong>產品品牌定案 = Voipark</strong>（Lodifa 選 B，避開 Spota 撞名）；<strong>GitHub Org = Voipark</strong>（已改）；remote 已 set-url → <code>Voipark/ceo</code>。</li><li><strong>IP 調查完成</strong>：Spota 裸名 / SpotaTW 皆有撞名風險（美國 Spota Labs 車用 App 同領域）→ 故改 Voipark。報告 <code>docs/research/2026-06-07_spota_trademark_ip.md</code>。<strong>N-02：Voipark 仍建議委託代理人做正式商標檢索(TIPO class 9/39/42)</strong>。</li><li><strong>全面改名已執行</strong>：GiveMeASpace→Voipark 全掃(core_dna/CLAUDE/docs/scripts)；plist 路徑→/Voipark；deploy→Voipark/live-docs + voipark.github.io。</li><li><strong>資料夾改名 ✓ 完成</strong>：已 mv 到 <code>/Users/d9niel/_workspace/Voipark</code>。<strong>DAEMON-01 plist 已重裝</strong>(舊 plist 仍指 /GiveMeASpace→FileNotFoundError 斷線；2026-06-08 unload→cp /Voipark 版→load -w，PID 健康 mode=BRIDGE)。python scripts 用 <code>__file__</code> 相對 ROOT，與資料夾名無關。⚠️斷線期間約 00:04 一則 God Telegram 訊息(12字)未寫入且 offset 已過→已請 God 視需要重傳。</li><li><strong>Telegram 通道 live</strong>：DAEMON-01 多角色(God + collaborator Lodifa uid ***)；雙向 tg_reply；collaborator 範圍內自主回。<strong>RESPONDER-01 + ADVANCE-01 已建未啟用</strong>（待 God settings allowlist + launchctl；視窗平日20-23/週末10-23）。</li><li><strong>live-docs 自動發布 live</strong>：voipark.github.io/live-docs；secret-scan 守密鑰；agent 可自動 deploy（God 已加 deploy 規則）。</li><li><strong>網站視覺改版（2026-06-08，God 三任務）</strong>：抽出共享設計語言 <code>scripts/site_common.py</code>（亮色溫暖友善 + 強化 md 渲染：連結/程式碼塊/引用/分隔線）。①<strong>pm-playbook 公開站上線</strong> → voipark.github.io/pm-playbook（<code>build_playbook.py</code> 走訪 docs/pm-playbook/ 自動生成，左側固定目錄+內文，跨檔連結轉錨點；新 repo Voipark/pm-playbook）。②live-docs 換新風格 ③用語人性化（代號對照表+白話框架）。兩站共用 site_common。</li></ul>
+<h3>產品決策 (已定)</h3>
+<ul><li>MVP=iPhone standalone 全語音閉環；CarPlay P1 parking 降級（R-07/R-07b）。</li><li>模板優先(TD-04)；交棒後脫手。<strong>P-02 定案 A：即時車位+置信度=MVP 核心</strong>（Lodifa 拍板）。</li><li>B-01 商業研究完成（SI-04 五收斂點）；營收(B2B先行)/定位屬建議待 God 正式拍板。</li></ul>
+<h3>方向 A（解放自主性）準備工作 ✓ 完成 (2026-06-08, God 不在電腦旁時推)</h3>
+<ul><li><strong>修真 bug</strong>：headless 自主腳本權限模式 <code>default</code>→<code>dontAsk</code>（CLI 2.1.168 實證：default 無人應答會卡住、dontAsk 才 auto-deny 安全 no-op）。改 mueller_advance.sh + tg_responder.sh。</li><li><strong>建 RETRO-01</strong>（God 指令低頻自我精進）：<code>mueller_retro.sh</code> + <code>com.givemeaspace.retro.plist</code>（每週日16:00），登記 automations.md。</li><li><strong>核心交付 = <code>.claude_memory/permission_proposal.md</code></strong>：可直接貼的頂層 allowlist（29 allow/10 deny，最小權限+路徑白名單，結構上無法自我擴權）+ 你要做的三步（修 settings.json / 裝 launchd / 定 Live 視窗）。<strong>發現現有 allowlist 巢狀放錯位置→沒生效</strong>。</li><li>advance_protocol.md 補：pm-playbook 部署、dontAsk 模式、RETRO-01。</li></ul>
+<h3>下一步 (next action) — 等 God</h3>
+<ul><li><strong>A 上線就差你拍板</strong>：審 <code>permission_proposal.md</code> → 同意就照三步走（修 settings.json 頂層 permissions + 裝 advance/retro launchd + 給我 Live 視窗時段）。</li><li>其餘：N-02 正式商標檢索(委託代理人)。命名/改名/資料夾 mv/DAEMON reload 皆 ✓。</li><li>產品線(寬鬆時段)：VF-07 信心措辭全表 / VF-03·08 STT-TTS / R-05 Google / R-06 海外 / R-02c 日間 poll 補 / R-04 新北補洞。</li></ul>
+<h3>注意</h3>
+<ul><li>預算時段配速；TDX 節流退避；密鑰只進 .env(不上 git)。</li><li>實作政策：FE/BE/QA 留 placeholder 只做設計。</li><li>Telegram：collaborator(Lodifa) 範圍內自主回；需 God 拍板的事 tg_reply 給 God(GOD_USER_ID)。</li></ul></div>
+      <div class="doc"><h2>Todo Backlog — Voipark</h2>
+<blockquote>待解決的技術債與開發/調研任務。每次任務結束由 CTO 主動更新。 狀態圖例：🔴 未開始 · 🟡 進行中 · 🟢 完成 · ⛔ 受阻</blockquote>
+<p>_最後更新：2026-05-31_</p>
+<h3>微調研 (Research)</h3>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>狀態</th><th>任務</th><th>產出</th><th>阻擋 / 備註</th></tr></thead><tbody><tr><td>R-01</td><td>🟢</td><td>雙北停車 App 競品互動模式盤點</td><td>競品矩陣 + 分心評分</td><td><strong>完成</strong>：GAP-01/02 驗證成立(高把握)。最大威脅=Google。差異化=語音閉環×置信度透明</td></tr><tr><td>R-02</td><td>🟢</td><td>TDX 停車 API 桌面調研：結構/欄位/驗證/額度</td><td>API 能力報告</td><td><strong>完成(桌面)</strong>：結構可行(OffStreet+OnStreet 即時 API、OAuth2、50req/s)；數值待 R-02b 實測</td></tr><tr><td>R-02b</td><td>🟢</td><td>TDX PoC 實打</td><td>新鮮度/缺漏率報告 + 桶閾值</td><td><strong>完成</strong>：台北路外 ~110 場可達 HIGH；新北路外空、台北路邊午夜全死。桶模型升 v1</td></tr><tr><td>R-02c</td><td>🟡</td><td><strong>白天</strong>時間序列輪詢 (60–90s, 數小時)，量真實 cadence + 確認台北路邊是否僅夜間停服</td><td>真實更新間隔分布</td><td>工具 <code>scripts/poll_tdx_cadence.py</code> 已建+驗證(節流1.5s+429退避+token續期)。<strong>夜間 cadence 4h 輪詢已背景啟動(2026-06-01 00:09)</strong> → <code>data/..._R02c_cadence.jsonl</code>。<strong>日間停服確認仍待 0900–1800 窗口</strong></td></tr><tr><td>R-03</td><td>🟡</td><td>置信度評分模型 (因子→權重→語音措辭分桶)</td><td>置信度規格 v0</td><td>v1 桶已校準入 core_dna；<strong>可由分身起草</strong>完整措辭對照</td></tr><tr><td>R-04</td><td>🟡</td><td>市府平臺盤點補缺口（<strong>新北路外</strong> data.ntpc / 台北路邊 data.taipei）</td><td>來源清單 + 補洞策略</td><td>升優先：TDX 對這兩塊有缺口</td></tr><tr><td>R-07</td><td>🟢</td><td><strong>CarPlay 停車類 app 可行性 GATING</strong></td><td><code>docs/research/2026-06-01_R07_carplay_feasibility.md</code></td><td><strong>完成</strong>：Parking 類別結構性禁止自訂語音閉環(SiriKit-only)→護城河受削；建議 iPhone-first 載語音閉環。<strong>SI-03，待 God 戰略裁示</strong></td></tr><tr><td>R-07b</td><td>🟢</td><td>voice-based-conversational 類別(iOS 26.4)對「語音停車+導航交棒」的可行性</td><td><code>docs/research/2026-06-01_R07b_*</code></td><td><strong>完成：否決</strong>(無GPS/無導航交棒/垂直零先例)。<strong>定案 CarPlay P1=parking 降級</strong>(Siri+template+URL交棒)</td></tr></tbody></table></div>
+<h3>語音 User Flow (Voice Flow — 線3主力)</h3>
+<blockquote>端到端規劃見 <code>docs/specs/voice-flow-spec-v0.md</code>（2026-06-01 v0）。各環節調研子任務如下；🔴 為擋 MVP 設計的關鍵路徑。</blockquote>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>環節</th><th>任務</th><th>狀態</th><th>優先</th><th>對應</th></tr></thead><tbody><tr><td>VF-03</td><td>S2</td><td>STT 供應商評測（繁中+雙北在地專名 WER）</td><td>🔴</td><td>高</td><td>E-01,TD-03</td></tr><tr><td>VF-04</td><td>S3</td><td>NLU 架構選型 + 意圖/槽位 schema</td><td>🔴</td><td>高</td><td>E-01</td></tr><tr><td>VF-06</td><td>S5</td><td>後端 TDX 快取/服務架構規格（延遲預算命脈）</td><td>🔴</td><td>高</td><td>E-01,R-02c</td></tr><tr><td>VF-07</td><td>S6</td><td>語音文案系統（信心桶→措辭全表）</td><td>🔴</td><td>高</td><td>R-03,P-01</td></tr><tr><td>VF-08</td><td>S7</td><td>TTS 供應商評測（自然度+專名+串流延遲）</td><td>🔴</td><td>高</td><td>E-01,TD-03</td></tr><tr><td>VF-10</td><td>S9</td><td>導航交棒技術方案 + CarPlay/Android Auto 能力矩陣</td><td>🔴</td><td>高</td><td>E-01,mvp_scope</td></tr><tr><td>VF-13</td><td>X3</td><td>平台合規與分心法規盤點 (CarPlay HIG/Android Auto/NHTSA)</td><td>🔴</td><td>高</td><td>E-01</td></tr><tr><td>VF-01</td><td>S0</td><td>喚醒/觸發方式選型</td><td>🔴</td><td>中</td><td>E-01</td></tr><tr><td>VF-02</td><td>S1</td><td>車內語音擷取/VAD/AEC 方案</td><td>🔴</td><td>中</td><td>E-01</td></tr><tr><td>VF-05</td><td>S4</td><td>Geocoding 來源 + 候選圈定演算法</td><td>🔴</td><td>中</td><td>—</td></tr><tr><td>VF-09</td><td>S8</td><td>多輪對話狀態機設計</td><td>🔴</td><td>中</td><td>—</td></tr><tr><td>VF-11</td><td>S10</td><td>失敗/降級語音路徑設計</td><td>🔴</td><td>中</td><td>—</td></tr><tr><td>VF-12</td><td>X2</td><td>隱私/資料保存規格</td><td>🔴</td><td>中</td><td>OPS</td></tr></tbody></table></div>
+<h3>競品深化 (線1，持續強力調查)</h3>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>狀態</th><th>任務</th><th>備註</th></tr></thead><tbody><tr><td>R-05</td><td>🔴</td><td>Google 威脅動態追蹤（Android Auto 語音停車意圖、Maps 停車難易度是否補語音閉環）</td><td>R-01 判定最大威脅；派分身桌面調研，寬鬆時段</td></tr><tr><td>R-06</td><td>🔴</td><td>海外語音停車/語音導航 App 對標（學互動模式與信心呈現）</td><td>找可借鏡的語音閉環範式；派分身</td></tr></tbody></table></div>
+<h3>命名 / IP (Naming)</h3>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>狀態</th><th>任務</th><th>備註</th></tr></thead><tbody><tr><td>N-01</td><td>🟢</td><td><strong>品牌命名拍板</strong></td><td><strong>定案 = Voipark</strong>（Lodifa 選 B，避開 Spota 同領域撞名/Spota Labs 車用 App）。已執行：全面改名 GiveMeASpace→Voipark、org→Voipark、remote→Voipark/ceo、deploy→Voipark/live-docs。資料夾 mv 待 God 收尾</td></tr><tr><td>N-02</td><td>🔴</td><td>定名後正式商標檢索（TIPO class 9/39/42 + USPTO TESS）+ 網域查(spota.tw/spotatw.com)</td><td>視 N-01 決定；建議委託商標代理人</td></tr></tbody></table></div>
+<h3>商業調研 / PM (Business Research)</h3>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>狀態</th><th>任務</th><th>產出</th><th>備註</th></tr></thead><tbody><tr><td>B-01</td><td>🟢</td><td>多方法論商業調研（7 框架：PESTEL/五力/SWOT/BMC/JTBD/VRIO/藍海）+ <strong>交叉比對整合版</strong></td><td><code>docs/pm-playbook/02-business-research/</code>（整合報告 + 7 框架附錄）</td><td><strong>完成</strong>。整合出 5 收斂點(C-01~05)、張力矩陣、TAM/SAM/SOM、B2B 先行營收、GTM 三階段、Top5 風險。核心: 置信度透明=對 Google 結構性免疫的護城河</td></tr></tbody></table></div>
+<h3>後設：PM 教科書（DOC-01 展開）</h3>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>狀態</th><th>任務</th><th>備註</th></tr></thead><tbody><tr><td>DOC-01a</td><td>🟡</td><td>pm-playbook 課程結構設計（專案啟動→收尾全程作為教學課綱）</td><td>God 指派「規劃+執行」；本回合 scaffold 課綱</td></tr><tr><td>DOC-01b</td><td>🔴</td><td>逐章把已發生的決策寫成教案（R-07 CarPlay gating pivot、置信度優先、灘頭堡、安全邊界三撞牆…皆為素材）</td><td>持續，可派 doc 分身/autonomy 引擎</td></tr></tbody></table></div>
+<h3>工程 (Engineering)</h3>
+<blockquote>政策：FE/BE/QA 實作一律留 <strong>placeholder/pending</strong> 給人類開發者；Mueller 只出設計/規格，不代寫產品碼。資料 PoC 腳本(如 probe_tdx)例外，可做。</blockquote>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>狀態</th><th>任務</th><th>備註</th></tr></thead><tbody><tr><td>E-01</td><td>🔴</td><td>技術選型（前端 / STT / TTS / 後端 / CarPlay·Android Auto 策略）</td><td>MVP=含導航交棒已定；須納入導航交棒能力 + 防 Google 威脅</td></tr><tr><td>E-02</td><td>🔴</td><td>TDX 介接 PoC 程式（拉雙北即時車位 + UpdateTime）</td><td>已併入 R-02b（PoC 即工程實作）</td></tr><tr><td>E-03</td><td>🟢</td><td><code>scripts/revelation_bridge.py</code> + launchd 常駐（Telegram→REVELATION.md）</td><td>DAEMON-01 <strong>上線</strong>(@givemeaspace_bot, BRIDGE mode)。多角色(God+collaborator)、發話者標註、flock 原子寫、offset 持久化、探測模式、ack。協作者 id 待 God 填 <code>COLLAB_USER_IDS</code></td></tr></tbody></table></div>
+<h3>技術債 (Tech Debt)</h3>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>狀態</th><th>項目</th><th>備註</th></tr></thead><tbody><tr><td>(無)</td><td>—</td><td>目前專案為初始化階段，尚無技術債</td><td>—</td></tr></tbody></table></div>
+<h3>自動化 (Automation)</h3>
+<blockquote>已移至專屬登記簿 → 見 <strong><code>.claude_memory/automations.md</code></strong>（HOOK-01 已啟用、ROUTINE-01 TDX 週檢計畫中、ROUTINE-02 Telegram 研究中）。</blockquote>
+<h3>設計 / 產品 (Design / Product)</h3>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>狀態</th><th>任務</th><th>備註</th></tr></thead><tbody><tr><td>P-01</td><td>🔵</td><td>UI 設計（Claude Design）：台北路外灘頭堡的語音查詢→信心回饋→導航交棒流程</td><td>MVP 設計階段；實際產出 mockup</td></tr><tr><td>P-02</td><td>🟢</td><td><strong>roadmap 裁示</strong>：即時車位+置信度移 phase 2？</td><td><strong>定案 A（維持置信度=MVP 核心）</strong>。God 授權 Lodifa 拍板(2026-06-02)，Lodifa 2026-06-03 回「維持好了」=選 A → 護城河留在 MVP。mvp_scope 不變</td></tr><tr><td>D-01</td><td>🟢</td><td><strong>live-docs 隱私保護自動發布</strong></td><td><strong>完成</strong>：單欄已上線(實測 HTTP200+1fr)。God 加 <code>Bash(bash scripts/deploy_site.sh:*)</code> 規則 → <strong>agent 可自動 deploy</strong>(蓋過硬 block)。隱私靠 Layer2 secret-scan 守(發布前掃密鑰,命中即中止)。引擎內容變動會自動刷新。URL https://voipark.github.io/live-docs/</td></tr><tr><td>D-02</td><td>🟢</td><td><strong>網站視覺改版(亮色溫暖友善)+ 用語人性化</strong></td><td><strong>完成+部署</strong>(God 三任務 2026-06-08)：抽 <code>scripts/site_common.py</code> 共享設計系統(亮色暖底/圓角白卡/柔影)+強化 md 渲染(連結/程式碼/引用/分隔線)；live-docs 換風格+加代號對照表/白話框架。兩站視覺一致。實測兩站 HTTP200</td></tr><tr><td>DOC-01c</td><td>🟢</td><td><strong>pm-playbook 公開靜態站</strong></td><td><strong>完成+部署</strong> https://voipark.github.io/pm-playbook/ (<code>build_playbook.py</code> 資料驅動走訪 docs/pm-playbook/，左側固定目錄+內文，跨檔連結轉錨點；新 repo Voipark/pm-playbook + <code>deploy_playbook.sh</code> 帶 secret-scan)。教案隨 DOC-01b 自動擴充</td></tr></tbody></table></div>
+<h3>營運 / 對外 Epics（post-MVP，未來）</h3>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>狀態</th><th>任務</th><th>備註</th></tr></thead><tbody><tr><td>OPS-01</td><td>🔵</td><td>上架計畫（App Store / Play）</td><td>MVP 完成後</td></tr><tr><td>OPS-02</td><td>🔵</td><td>營運計畫</td><td>MVP 完成後</td></tr><tr><td>PR-01</td><td>🔵</td><td>PR 公共關係</td><td>MVP 完成後</td></tr><tr><td>GR-01</td><td>🔵</td><td>GR 政府關係（TDX/雙北資料源合作）</td><td>越早鋪陳越好，資料合作關鍵</td></tr></tbody></table></div>
+<h3>後設：PM 教科書 + 教育/文件團隊</h3>
+<div class='tablewrap'><table><thead><tr><th>ID</th><th>狀態</th><th>任務</th><th>備註</th></tr></thead><tbody><tr><td>DOC-01</td><td>🟡</td><td>建 <code>docs/pm-playbook/</code> 結構 + 教育/文件 subagent 團隊 + 找/建相關 skill</td><td>REVELATION 指派；本回合起 scaffold</td></tr></tbody></table></div></div>
+    </main>
+    <footer>
+      <p>Voipark · 由 Mueller（CTO）自動產生於 2026-06-08 16:24 TW · 資料主源 TDX · 本頁為研究進度展示，不含任何密鑰。</p>
+    </footer>
+</body>
+</html>
